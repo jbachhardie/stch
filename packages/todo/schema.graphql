@@ -1,0 +1,16 @@
+type Todo {
+  id: ID!
+  authorId: ID!
+  title: String!
+  isComplete: Boolean!
+}
+
+type Query {
+  todosByAuthor(authorId: ID!): [Todo]
+}
+
+type Mutation {
+  createTodo(authorId: ID!, title: String!): Todo
+  completeTodo(id: ID!): Todo
+  uncompleteTodo(id: ID!): Todo
+}
