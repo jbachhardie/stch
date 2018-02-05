@@ -10,7 +10,7 @@ db.defaults({ todos: [] }).write();
 const getTodosByAuthor = authorId =>
   db
     .get('todos')
-    .find({ authorId })
+    .filter({ authorId })
     .value();
 
 const addTodo = todo =>
