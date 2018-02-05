@@ -1,19 +1,17 @@
-const { microGraphiql, microGraphql } = require('apollo-server-micro');
-const micro = require('micro');
-const { send } = micro;
-const { get, post, router } = require('microrouter');
-const schema = require('./schema');
+const { GraphQLServer } = require('graphql-yoga');
+const fetch = require('node-fetch');
+const { HttpLink } = require('apollo-link-http');
+const {
+  introspectSchema,
+  makeRemoteExecutableSchema,
+  mergeSchemas,
+} = require('graphql-tools');
 
-const graphqlHandler = microGraphql({ schema });
-const graphiqlHandler = microGraphiql({ endpointURL: '/graphql' });
+const userLink = new HttpLink({ uri: 'http://localhost:6001', fetch });
+const userSchema = await introspectSchema(userLink)
 
-const server = micro(
-  router(
-    get('/graphql', graphqlHandler),
-    post('/graphql', graphqlHandler),
-    get('/graphiql', graphiqlHandler),
-    (req, res) => send(res, 404, 'not found')
-  )
+const server = new GraphQLServer({ schema });
+const port = 6000;
+server.start({ port }, () =>
+  console.log('Server is running on localhost:', port)
 );
-
-server.listen(6000);
