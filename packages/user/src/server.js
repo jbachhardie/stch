@@ -1,19 +1,20 @@
-const { microGraphiql, microGraphql } = require('apollo-server-micro');
-const micro = require('micro');
-const { send } = micro;
-const { get, post, router } = require('microrouter');
-const schema = require('./schema');
+const { GraphQLServer } = require('graphql-yoga');
+const db = require('./db');
 
-const graphqlHandler = microGraphql({ schema });
-const graphiqlHandler = microGraphiql({ endpointURL: '/graphql' });
+const typeDefs = 'schema.graphql';
+const resolvers = {
+  Query: {
+    allUsers: () => db.getAllUsers(),
+    user: (_obj, { id }) => db.getUserById(id),
+  },
+  Mutation: {
+    createUser: (_obj, { name }) => db.addUser({ name }),
+    deleteUser: (_obj, { id }) => db.removeUser(id),
+  },
+};
 
-const server = micro(
-  router(
-    get('/graphql', graphqlHandler),
-    post('/graphql', graphqlHandler),
-    get('/graphiql', graphiqlHandler),
-    (req, res) => send(res, 404, 'not found')
-  )
+const server = new GraphQLServer({ typeDefs, resolvers });
+const port = 6001;
+server.start({ port }, () =>
+  console.log('Server is running on localhost:', port)
 );
-
-server.listen(6001);
