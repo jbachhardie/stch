@@ -15,6 +15,12 @@ const getUserById = id =>
     .getById(id)
     .value();
 
+const getUserByName = name =>
+  db
+    .get('users')
+    .find(['name', name])
+    .value();
+
 const addUser = user =>
   db
     .get('users')
@@ -30,6 +36,7 @@ const removeUser = id =>
 module.exports = {
   getAllUsers,
   getUserById,
+  getUserByName,
   addUser,
   removeUser,
 };

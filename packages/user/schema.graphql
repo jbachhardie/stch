@@ -1,6 +1,7 @@
 type User {
   id: ID!
   name: String!
+  passwordHash: String!
 }
 
 type Query {
@@ -9,6 +10,7 @@ type Query {
 }
 
 type Mutation {
-  createUser(name: String!): User
+  createUser(name: String!, password: String!): User
   deleteUser(id: ID!): Boolean
+  login(name: String!, password: String!): Boolean
 }
