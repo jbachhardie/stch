@@ -1,4 +1,5 @@
 const { mergeSchemas } = require('graphql-tools');
+const { once } = require('lodash');
 const {
   schemaExtensions,
   relationshipResolvers,
@@ -16,4 +17,4 @@ const getSchema = async () => {
   });
 };
 
-module.exports = getSchema();
+module.exports = once(getSchema);
